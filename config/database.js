@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const { Schema } = mongoose; 
 
 exports.connectDb = async () => {
   try {
@@ -10,10 +10,24 @@ exports.connectDb = async () => {
   }
 }
 // create a schema 
-const loginSchema = new mongoose.Schema({
+const loginSchema = new Schema({
   username: { type: String, required: true },
   password: { type: String, required: true }
 });
+
+// create user score schema
+// Path: models/score.js
+
+const ScoreSchema = new Schema({
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    score: { type: Number, required: true },
+    date: { type: Date, default: Date.now }
+});
+
+exports.collection2 = mongoose.model('Score', ScoreSchema);
+
+
+
 
 exports.collection = mongoose.model('users', loginSchema);
 

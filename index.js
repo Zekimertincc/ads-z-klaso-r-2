@@ -4,7 +4,8 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-const { connectDb, collection } = require('./config/database');
+const { connectDb, collection ,collection2} = require('./config/database');
+
 
 dotenv.config();
 
@@ -67,7 +68,7 @@ app.get('/buyuyendi', (req, res) => {
     res.sendFile(path.join(__dirname, '/views/büyüyendikdört.html'));
 });
 
-app.get('/hizliokuma', (req, res) => {
+app.get('/hizli', (req, res) => {
     res.sendFile(path.join(__dirname, '/views/hızlıokuma.html'));
 });
 
@@ -152,6 +153,29 @@ app.get('/status', (req, res) => {
         res.json({ loggedIn: false });
     }
 });
+
+//score save 
+//score save 
+app.post('/save', async (req, res) => {
+    console.log('Saving score for user:', req.session.user.id);
+    console.log('Score:', req.body.score);
+    if (!req.session.user) {
+        return res.status(401).send('Unauthorized: No session available');
+    }
+
+    try {
+        const newScore = {
+            userId: req.session.user.id,
+            score: req.body.score
+        };
+        await collection2.create(newScore);
+        res.status(200).send('Score saved');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server error');
+    }
+});
+
 
 // 404 Not Found route
 app.use((req, res) => {
