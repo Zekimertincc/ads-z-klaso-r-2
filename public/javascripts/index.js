@@ -38,6 +38,7 @@ function animateEmojis() {
         const timerElement = document.querySelector('.timer');
         
         function animateRound() {
+            
             clearBoard();
             shuffleArray(emojis);
             kartDağıt();

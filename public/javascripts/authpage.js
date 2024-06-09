@@ -1,11 +1,14 @@
 async function checkLoginStatus() {
     try {
+        
         const response = await fetch('/status');
         const data = await response.json();
         if (data.loggedIn) {
             document.getElementById('giriştuş').innerText = "Profil";
             document.getElementById('giriştuş').href = "/profil";
             document.getElementById('logout').style.display = "block";
+            document.querySelector('.showUserName').innerText = data.username + " " +"profil sayfana hoşgeldin";
+            document.querySelector('.highScore').innerText = "En yüksek skorun: " + data.score;
         } else {
             document.getElementById('giriştuş').innerText = "Kullanıcı giriş";
             document.getElementById('giriştuş').href = "/authpage";
@@ -33,5 +36,7 @@ async function logout() {
         console.error('Error during logout:', error);
     }
 }
+
+ 
 
 window.onload = checkLoginStatus;

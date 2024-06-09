@@ -83,6 +83,15 @@ app.get('/authpage', (req, res) => {
 app.get('/profil', (req, res) => {
     res.sendFile(path.join(__dirname, '/views/profil.html'));
 });
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, '/views/admin.html'));
+});
+app.get('/golge'    , (req, res) => {
+    res.sendFile(path.join(__dirname, '/views/golge.html'));
+});
+app.get('/takis', (req, res) => {
+    res.sendFile(path.join(__dirname, '/views/takis.html'));
+});
 
 // Register route
 app.post('/signup', async (req, res) => {
@@ -146,13 +155,25 @@ app.post('/logout', (req, res) => {
 });
 
 // Check login status route
-app.get('/status', (req, res) => {
+
+
+// Check login status route
+app.get('/status', async (req, res) => {
     if (req.session.user) {
-        res.json({ loggedIn: true, username: req.session.user.username });
+        try {
+            const user = req.session.user;
+            const highScoreDoc = await collection2.findOne({ userId: user.id }).sort({ score: -1 }).exec();
+            const highScore = highScoreDoc ? highScoreDoc.score : 0;
+            res.json({ loggedIn: true, username: user.username, score: highScore });
+        } catch (error) {
+            console.error('Error fetching high score:', error);
+            res.json({ loggedIn: true, username: req.session.user.username, score: 0 });
+        }
     } else {
         res.json({ loggedIn: false });
     }
 });
+
 
 //score save 
 //score save 
@@ -172,6 +193,36 @@ app.post('/save', async (req, res) => {
         res.status(200).send('Score saved');
     } catch (err) {
         console.error(err);
+        res.status(500).send('Server error');
+    }
+});
+// New route to fetch all users and their scores
+app.get('/users-scores', async (req, res) => {
+    try {
+        const users = await collection.find({}, 'username').exec(); // Only fetch username
+        const scores = await collection2.find({}).exec();
+
+        const userScoresMap = {};
+
+        scores.forEach(score => {
+            const userIdStr = score.userId.toString();
+            if (!userScoresMap[userIdStr]) {
+                userScoresMap[userIdStr] = [];
+            }
+            userScoresMap[userIdStr].push(score.score);
+        });
+
+        const usersScores = users.map(user => {
+            const userIdStr = user._id.toString();
+            return {
+                username: user.username,
+                scores: userScoresMap[userIdStr] || []
+            };
+        });
+
+        res.json(usersScores);
+    } catch (error) {
+        console.error('Error fetching users and scores:', error);
         res.status(500).send('Server error');
     }
 });
