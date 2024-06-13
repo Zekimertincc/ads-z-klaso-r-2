@@ -1,43 +1,60 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const startButton = document.querySelector(".start");
-    const sahne = document.getElementById("sahne");
-    const inputKelime = document.getElementById("inputKelime");
-    const kelimeListesi = ["Merhaba", "Dünya", "Takistoskop", "Çalışma", "Test"];
-    let currentIndex = 0;
-    let currentWord;
+const kelimeGoster = document.querySelector('.kelime1');
+const cevapInput = document.querySelector('.cevap');
+const kontrolBtn = document.querySelector('.kontrol');
+const baslatBtn = document.querySelector('#bas');
+const dışKutu = document.querySelector('.kelime');
+const kelimeler = [
+    "taş", "su", "dağ", "yol", "ev", "ay", "kış", "gün", "ağaç", "kuş", 
+    "deniz", "yaz", "ışık", "kum", "yaprak", "rüzgar", "köy", "şehir", 
+    "hava", "yıldız", "göl", "dal", "ot", "gölge", "buz"
+];
 
-    // Tuşa basıldığında işlemi başlat
-    startButton.addEventListener("click", function() {
-        currentIndex = 0;
-        inputKelime.value = ""; // Input alanını temizle
-        showNextWord();
-    });
+let currentKelimeIndex;
+let timer;
 
-    // Sonraki kelimeyi göster
-    function showNextWord() {
-        // Eğer tüm kelimeleri gösterdikse işlemi sonlandır
-        if (currentIndex >= kelimeListesi.length) return;
 
-        // Önceki kelimenin borderını kaldır
-        if (currentWord) currentWord.classList.remove("blink");
+function kelimeGosterRandom() {
+    const randomIndex = Math.floor(Math.random() * kelimeler.length);
+    currentKelimeIndex = randomIndex;
+    kelimeGoster.textContent = kelimeler[randomIndex];
+    setTimeout(() => {
+        kelimeGoster.textContent = ""; // Önce temizle
+    }, 500); // 500ms sonra kelimeyi göster
+}
 
-        // Yeni kelimeyi oluştur
-        const kelimeDiv = document.createElement("div");
-        kelimeDiv.classList.add("kelimeDiv");
-        kelimeDiv.textContent = kelimeListesi[currentIndex];
-        sahne.appendChild(kelimeDiv);
-
-        // Kelimeyi mavi border ile yanıp söndür
+function yanıpsöndür(callback) {
+    let count = 0;
+    const interval = setInterval(() => {
+        dışKutu.style.border = "5px solid RGB(74, 207, 238)";
         setTimeout(() => {
-            kelimeDiv.classList.add("blink");
-        }, 100);
+            dışKutu.style.border = "none";
+        }, 200);
+        count++;
+        if (count >= 5) {
+            clearInterval(interval);
+            if (callback) callback();
+            // Loop bittikten sonra callback fonksiyonunu çağır
+        }
+    }, 700);
+    
+    
+}
 
-        // Gelecek kelimeyi göstermek için zamanlayıcı
-        setTimeout(() => {
-            // Eğer kullanıcı kelimeyi yanlış girdiyse
-            if (inputKelime.value !== kelimeListesi[currentIndex]) {
-                kelimeDiv.classList.add("wrong"); // Yanlış girilen kelimenin stilini değiştir
-            }
-        }, 3000); // 3 saniye sonra kelimeyi kaldır
+function kontrolEt() {
+    const girilenCevap = cevapInput.value.trim().toLowerCase();
+    const dogruCevap = kelimeler[currentKelimeIndex];
+
+    if (girilenCevap === dogruCevap) {
+        alert("Tebrikler, doğru cevap!");
+        baslatOyun();
+    } else {
+        alert("Maalesef, yanlış cevap!");
     }
-});
+}
+
+function baslatOyun() {
+    yanıpsöndür(kelimeGosterRandom);
+}
+
+kontrolBtn.addEventListener('click', kontrolEt);
+baslatBtn.addEventListener('click', baslatOyun);

@@ -93,6 +93,13 @@ app.get('/takis', (req, res) => {
     res.sendFile(path.join(__dirname, '/views/takis.html'));
 });
 
+app.get('/tekcift', (req,res)=>{
+    res.sendFile(path.join(__dirname, '/views/deneme.html'));
+});
+app.get('/dikeyzik', (req,res)=>{
+    res.sendFile(path.join(__dirname, '/views/dikeyzikzak.html'));
+});
+
 // Register route
 app.post('/signup', async (req, res) => {
     const { username, password } = req.body;
