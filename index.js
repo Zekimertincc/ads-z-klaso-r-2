@@ -4,6 +4,7 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const { verifyToken} = require('./config/isAuth')
 const { connectDb, collection ,collection2} = require('./config/database');
 
 
@@ -94,7 +95,7 @@ app.get('/takis', (req, res) => {
 });
 
 app.get('/tekcift', (req,res)=>{
-    res.sendFile(path.join(__dirname, '/views/deneme.html'));
+    res.sendFile(path.join(__dirname, '/views/tekcift.html'));
 });
 app.get('/dikeyzik', (req,res)=>{
     res.sendFile(path.join(__dirname, '/views/dikeyzikzak.html'));
