@@ -24,6 +24,7 @@ const ScoreSchema = new Schema({
     date: { type: Date, default: Date.now }
 });
 
+
 exports.collection2 = mongoose.model('Score', ScoreSchema);
 
 

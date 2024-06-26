@@ -3,6 +3,7 @@ const cevapInput = document.querySelector('.cevap');
 const kontrolBtn = document.querySelector('.kontrol');
 const baslatBtn = document.querySelector('#bas');
 const dışKutu = document.querySelector('.kelime');
+const levelSelect= document.getElementById("level")
 const kelimeler = [
     "taş", "su", "dağ", "yol", "ev", "ay", "kış", "gün", "ağaç", "kuş", 
     "deniz", "yaz", "ışık", "kum", "yaprak", "rüzgar", "köy", "şehir", 
@@ -11,19 +12,23 @@ const kelimeler = [
 
 let currentKelimeIndex;
 let timer;
+let intervalTime = 500 ;
+let hız = 500;
 
 
 function kelimeGosterRandom() {
+    
     const randomIndex = Math.floor(Math.random() * kelimeler.length);
     currentKelimeIndex = randomIndex;
     kelimeGoster.textContent = kelimeler[randomIndex];
     setTimeout(() => {
         kelimeGoster.textContent = ""; // Önce temizle
-    }, 500); // 500ms sonra kelimeyi göster
+    }, hız); // 500ms sonra kelimeyi göster
 }
 
 function yanıpsöndür(callback) {
     let count = 0;
+
     const interval = setInterval(() => {
         dışKutu.style.border = "5px solid RGB(74, 207, 238)";
         setTimeout(() => {
@@ -52,7 +57,17 @@ function kontrolEt() {
     }
 }
 
+
 function baslatOyun() {
+
+if (levelSelect.value === "1") {
+    hız = 500;
+} else if (levelSelect.value === "2") {
+    hız = 300;
+} else if (levelSelect.value === "3") {
+    hız = 200;
+}
+
     yanıpsöndür(kelimeGosterRandom);
 }
 

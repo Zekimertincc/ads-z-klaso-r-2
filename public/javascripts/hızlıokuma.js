@@ -22,6 +22,7 @@ let timerInterval;
 let süre;
 let highScore = 0;
 let kelimeSayisi;
+let oyunAd= "hızlıokuma";
 
 function metinGöster() {
     clearInterval(timerInterval);
@@ -39,23 +40,6 @@ function metinGöster() {
     kelimeSayisi = kelimeSay();
 }
 
-fetch('/save', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ score: 100 }) // Example payload
-})
-.then(response => {
-    if (response.ok) {
-        console.log('Score saved successfully');
-    } else {
-        console.error('Error saving score');
-    }
-})
-.catch(error => {
-    console.error('Error:', error);
-});
 
 
 async function saveScore(score) {
