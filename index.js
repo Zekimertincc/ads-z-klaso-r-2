@@ -99,7 +99,9 @@ app.get('/tekcift', (req,res)=>{
 app.get('/dikeyzik', (req,res)=>{
     res.sendFile(path.join(__dirname, '/views/dikeyzikzak.html'));
 });
-
+app.get('/cms', (req,res)=>{
+    res.sendFile(path.join(__dirname, '/views/cms.html'));
+});
 // Register route
 app.post('/signup', async (req, res) => {
     const { username, password } = req.body;
