@@ -12,15 +12,15 @@
     overflow: auto; /* Hem dikey hem yatay taşmayı engelle ve bir kaydırma çubuğu ekler */
 }
 
-
-
-.navbar{
-    background-color: #94674D !important;
+body {
+    background-color: var(--background-color, #FFE0B1);
 }
 
-body{
-    background-color:#FFE0B1 !important ;
+.navbar {
+    background-color: var(--nav-bar-color, #94674D);
 }
+
+
 
 .container2 {
     display: flex;

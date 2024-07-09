@@ -1,16 +1,59 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
+const fs = require('fs');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-const { connectDb, collection ,collection2} = require('./config/database');
-
+const { connectDb, collection, collection2 } = require('./config/database');
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(express.static('public'));
+app.use(express.json());
+
+let colorSettings = {
+  backgroundColor: '#FFE0B1',
+  navBarColor: '#94674D'
+};
+
+// Load color settings
+function loadColorSettings() {
+  console.log('Loading color settings...');
+  if (fs.existsSync('colors.json')) {
+    const data = fs.readFileSync('colors.json');
+    colorSettings = JSON.parse(data);
+    console.log('Color settings loaded:', colorSettings);
+  } else {
+    console.log('colors.json file does not exist.');
+  }
+}
+
+// Save color settings
+function saveColorSettings() {
+  console.log('Saving color settings:', colorSettings);
+  fs.writeFileSync('colors.json', JSON.stringify(colorSettings));
+  console.log('Color settings saved.');
+}
+
+loadColorSettings();
+
+// Get color settings
+app.get('/api/colors', (req, res) => {
+  res.json(colorSettings);
+});
+
+// Update color settings
+app.post('/api/colors', (req, res) => {
+  const { backgroundColor, navBarColor } = req.body;
+  colorSettings.backgroundColor = backgroundColor || colorSettings.backgroundColor;
+  colorSettings.navBarColor = navBarColor || colorSettings.navBarColor;
+  saveColorSettings();
+  res.json(colorSettings);
+});
 
 // Connect to database
 connectDb();
@@ -83,25 +126,31 @@ app.get('/authpage', (req, res) => {
 app.get('/profil', (req, res) => {
     res.sendFile(path.join(__dirname, '/views/profil.html'));
 });
+
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, '/views/admin.html'));
 });
-app.get('/golge'    , (req, res) => {
+
+app.get('/golge', (req, res) => {
     res.sendFile(path.join(__dirname, '/views/golge.html'));
 });
+
 app.get('/takis', (req, res) => {
     res.sendFile(path.join(__dirname, '/views/takis.html'));
 });
 
-app.get('/tekcift', (req,res)=>{
+app.get('/tekcift', (req, res) => {
     res.sendFile(path.join(__dirname, '/views/deneme.html'));
 });
-app.get('/dikeyzik', (req,res)=>{
+
+app.get('/dikeyzik', (req, res) => {
     res.sendFile(path.join(__dirname, '/views/dikeyzikzak.html'));
 });
-app.get('/cms', (req,res)=>{
+
+app.get('/cms', (req, res) => {
     res.sendFile(path.join(__dirname, '/views/cms.html'));
 });
+
 // Register route
 app.post('/signup', async (req, res) => {
     const { username, password } = req.body;
@@ -164,9 +213,6 @@ app.post('/logout', (req, res) => {
 });
 
 // Check login status route
-
-
-// Check login status route
 app.get('/status', async (req, res) => {
     if (req.session.user) {
         try {
@@ -183,9 +229,7 @@ app.get('/status', async (req, res) => {
     }
 });
 
-
-//score save 
-//score save 
+// Score save route
 app.post('/save', async (req, res) => {
     console.log('Saving score for user:', req.session.user.id);
     console.log('Score:', req.body.score);
@@ -205,6 +249,7 @@ app.post('/save', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+
 // New route to fetch all users and their scores
 app.get('/users-scores', async (req, res) => {
     try {
@@ -236,13 +281,6 @@ app.get('/users-scores', async (req, res) => {
     }
 });
 
-
-// 404 Not Found route
-app.use((req, res) => {
-    res.status(404).send('404 Not Found');
-});
-
-// Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
