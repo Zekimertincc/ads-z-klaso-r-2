@@ -9,16 +9,19 @@
     <title>CMS Page</title>
 </head>
 <body>
-    <div class="container mt-5">
-        <div class="mb-3">
-            <label for="backgroundColor" class="form-label">Ana arka plan rengi</label>
-            <input type="color" id="backgroundColor" name="backgroundColor" value="#FFE0B1" class="form-control form-control-color">
-        </div>
-        <div class="mb-3">
-            <label for="navBarColor" class="form-label">Navigasyon-barı arka plan rengi</label>
-            <input type="color" id="navBarColor" name="navBarColor" value="#94674D" class="form-control form-control-color">
-        </div>
-        <button id="saveColors" class="btn btn-primary">Kaydet</button>
+    <div class="text-container">
+        <h2 class="text-center">Login</h2>
+        <form action="/saveText" method="post">
+            <div class="mb-3">
+                <label for="başlık" class="form-label">Başlık</label>
+                <input type="text" class="form-control" id="başlık" name="başlık" required>
+            </div>
+            <div class="mb-3">
+                <label for="metin" class="form-label">Metin</label>
+                <input type="string" class="form-control" id="metin" name="metin" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">kaydet</button>
+        </form>
     </div>
 
     <script src="/public/javascripts/cms.js"></script>

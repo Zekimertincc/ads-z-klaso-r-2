@@ -5,7 +5,7 @@ const fs = require('fs');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-const { connectDb, collection, collection2 } = require('./config/database');
+const { connectDb, collection, collection2 , collection3} = require('./config/database');
 
 dotenv.config();
 
@@ -15,45 +15,10 @@ const PORT = process.env.PORT || 3000;
 app.use(express.static('public'));
 app.use(express.json());
 
-let colorSettings = {
-  backgroundColor: '#FFE0B1',
-  navBarColor: '#94674D'
-};
 
-// Load color settings
-function loadColorSettings() {
-  console.log('Loading color settings...');
-  if (fs.existsSync('colors.json')) {
-    const data = fs.readFileSync('colors.json');
-    colorSettings = JSON.parse(data);
-    console.log('Color settings loaded:', colorSettings);
-  } else {
-    console.log('colors.json file does not exist.');
-  }
-}
 
-// Save color settings
-function saveColorSettings() {
-  console.log('Saving color settings:', colorSettings);
-  fs.writeFileSync('colors.json', JSON.stringify(colorSettings));
-  console.log('Color settings saved.');
-}
 
-loadColorSettings();
 
-// Get color settings
-app.get('/api/colors', (req, res) => {
-  res.json(colorSettings);
-});
-
-// Update color settings
-app.post('/api/colors', (req, res) => {
-  const { backgroundColor, navBarColor } = req.body;
-  colorSettings.backgroundColor = backgroundColor || colorSettings.backgroundColor;
-  colorSettings.navBarColor = navBarColor || colorSettings.navBarColor;
-  saveColorSettings();
-  res.json(colorSettings);
-});
 
 // Connect to database
 connectDb();
@@ -280,6 +245,20 @@ app.get('/users-scores', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+
+
+// text kaydetme 
+app.post('/saveText', async (req, res) => {
+    const { başlık, metin } = req.body;
+    try {
+        const newText = new collection3({ metinler: [{ başlık, metin }] }); // collection3 olarak değiştirildi
+        await newText.save();
+        res.status(200).send('Text saved successfully!');
+    } catch (error) {
+        res.status(500).send('Error saving text: ' + error.message);
+    }
+});
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

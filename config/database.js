@@ -24,11 +24,20 @@ const ScoreSchema = new Schema({
     date: { type: Date, default: Date.now }
 });
 
+//metinlerin schema oluştur
+const textSchema = new Schema({
+  metinler: [{
+    başlık: { type: String, required: true },
+    metin: { type: String, required: true }
+  }]
+})
+
+
 
 exports.collection2 = mongoose.model('Score', ScoreSchema);
 
 
-
+exports.collection3 = mongoose.model('texts',textSchema);
 
 exports.collection = mongoose.model('users', loginSchema);
 
